@@ -17,6 +17,9 @@ class Game:
 
         self.initialize_board()
 
+        self.prev_board = Board(self.board)
+        self.temp_board = Board()
+
         print(self.board)
 
 
@@ -32,6 +35,10 @@ class Game:
     def next_card_id(self):
         self._next_card_id = self._next_card_id + 1
         return self._next_card_id
+
+    def next_card_hint(self):
+        next_card_value = self._next_bonus_card or self.deck.peek_next_card()
+        return next_card_value
 
     def draw_next_card(self):
         if self._next_bonus_card:
@@ -53,6 +60,36 @@ class Game:
         # }
 
         return Card(card_value, self.next_card_id())
+
+    def shift(self, dir):
+        self.temp_board.copy_from(self.board)
+        new_card_cells = []
+        shifted = self.board.shift(dir, new_card_cells)
+        return shifted
+
+        
+        # 	/// <summary>
+        # /// Shifts the game board in the specified direction, merging cards where possible.
+        # /// </summary>
+        # /// <returns>Whether any cards were actually shifted.</returns>
+        # public bool Shift(ShiftDirection dir)
+        # {
+        # 	_tempBoard.CopyFrom(_board);
+        # 	List<IntVector2D> newCardCells = new List<IntVector2D>();
+        # 	bool shifted = _board.Shift(dir, newCardCells);
+        # 	if(shifted)
+        # 	{
+        # 		IntVector2D newCardCell = newCardCells[_rand.Int32(0, newCardCells.Count - 1)];
+        # 		_board[newCardCell] = DrawNextCard();
+
+        # 		_prevBoard.CopyFrom(_tempBoard);
+        # 		LastShiftTime = DateTime.Now;
+        # 		LastShiftDirection = dir;
+        # 		TotalTurns++;
+        # 	}
+        # 	return shifted;
+        # }
+
     
 
 

@@ -22,4 +22,9 @@ class Deck:
         self.card_values = list(self.INITIAL_CARD_VALUES)
         np.random.shuffle(self.card_values)
 
+    def peek_next_card(self):
+        if (len(self.card_values) == 0):
+            self.rebuild_deck()
+
+        return self.card_values[-1]
     
