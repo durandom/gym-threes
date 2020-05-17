@@ -20,8 +20,6 @@ class Game:
         self.prev_board = Board(self.board)
         self.temp_board = Board()
 
-        print(self.board)
-
 
     def initialize_board(self):
         rng = np.random.default_rng()
@@ -63,9 +61,15 @@ class Game:
 
     def shift(self, dir):
         self.temp_board.copy_from(self.board)
-        new_card_cells = []
-        shifted = self.board.shift(dir, new_card_cells)
-        return shifted
+        new_card_cells = self.board.shift(dir)
+        if new_card_cells:
+            print("new cards at:")
+            print(new_card_cells)
+            for cell in new_card_cells:
+                self.board[cell] = self.draw_next_card()
+            self.prev_board.copy_from(self.temp_board)
+            
+        return bool(new_card_cells)
 
         
         # 	/// <summary>
