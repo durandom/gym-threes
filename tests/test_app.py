@@ -5,8 +5,8 @@ def test_game():
     game = Game()
     bot = RandomBot()
 
-    print("\n-------")
-    print(game.board)
+    print("\nStart Board")
+    print(f"{game.board}\n")
 
     while True:
         next_move = bot.get_next_move(game.board, game.deck, game.next_card_hint())
@@ -14,8 +14,9 @@ def test_game():
 
         if not next_move:
             break
-        game.shift(next_move)
+        shifted = game.shift(next_move)
 
-        print(game.board)
+        if not shifted:
+            break
 
-        break
+        print(f"new Board:\n{game.board}\n")

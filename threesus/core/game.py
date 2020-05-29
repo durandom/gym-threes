@@ -6,6 +6,8 @@ import numpy as np
 class Game:
     deck = None
     board = None
+    last_shift_direction = None
+    total_turns = 0
     number_initial_cards = 9
     _next_card_id = 0
 
@@ -63,11 +65,13 @@ class Game:
         self.temp_board.copy_from(self.board)
         new_card_cells = self.board.shift(dir)
         if new_card_cells:
-            print("new cards at:")
-            print(new_card_cells)
+            print(f"new cards at: {new_card_cells}")
+            # FIXME randomize
             for cell in new_card_cells:
                 self.board[cell] = self.draw_next_card()
             self.prev_board.copy_from(self.temp_board)
+            self.last_shift_direction = dir
+            self.total_turns = self.total_turns + 1
             
         return bool(new_card_cells)
 

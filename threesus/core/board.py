@@ -46,7 +46,7 @@ class Board():
             if (shifted):
                 new_card_cells.append(tuple(start_cell - increment * (width_or_height -1)))
         
-        print(f"shifted board: {new_card_cells}")
+        # print(f"shifted board: {new_card_cells}")
         return new_card_cells
 
     def shift_row_or_column(self, start_cell, increment, width_or_height):
@@ -76,52 +76,29 @@ class Board():
             prev_cell = cur_cell
             cur_cell = cur_cell - increment
 
-        print(f"shifted row or column {ret} ({start_cell}")
+        # print(f"shifted row or column {ret} ({start_cell}")
         return ret
 
     def get_shift_start_cells(self, dir):
         r = []
         if dir is ShiftDirection.left:
             for y in range(self.height):
-                # r.append(np.array([0, y]))
                 r.append(np.array([y, 0]))
+        elif dir is ShiftDirection.right:
+            for y in range(self.height):
+                r.append(np.array([y, self.width - 1]))
+        elif dir is ShiftDirection.up:
+            for y in range(self.width):
+                r.append(np.array([0, y]))
+        elif dir is ShiftDirection.down:
+            for y in range(self.width):
+                r.append(np.array([self.height -1, y]))
+        else:
+            raise Exception(f"Unknown Shiftdirection {dir}")
+
+        # print(f"Shift Start Cells {r}")
         return r
         
-        # public static IEnumerable<IntVector2D> GetShiftStartCells(ShiftDirection dir)
-        # {
-        # 	switch(dir)
-        # 	{
-        # 		case ShiftDirection.Left:
-        # 		{
-        # 			for(int y = 0; y < BOARD_HEIGHT; y++)
-        # 				yield return new IntVector2D(0, y);
-        # 			break;
-        # 		}
-        # 		case ShiftDirection.Right:
-        # 		{
-        # 			for(int y = 0; y < BOARD_HEIGHT; y++)
-        # 				yield return new IntVector2D(BOARD_WIDTH - 1, y);
-        # 			break;
-        # 		}
-        # 		case ShiftDirection.Up:
-        # 		{
-        # 			for(int x = 0; x < BOARD_WIDTH; x++)
-        # 				yield return new IntVector2D(x, 0);
-        # 			break;
-        # 		}
-        # 		case ShiftDirection.Down:
-        # 		{
-        # 			for(int x = 0; x < BOARD_WIDTH; x++)
-        # 				yield return new IntVector2D(x, BOARD_HEIGHT - 1);
-        # 			break;
-        # 		}
-        # 		default:
-        # 		{
-        # 			throw new NotSupportedException("Unknown ShiftDirection '" + dir + "'.");
-        # 		}
-        # 	}
-        # }
-
     def get_shift_width_or_height(self, dir):
         if dir is ShiftDirection.left:
             return self.width
@@ -134,14 +111,13 @@ class Board():
 
     def get_shift_increment(self, dir):
         if dir is ShiftDirection.left:
-            # return np.array([-1, 0])
             return np.array([0, -1])
         elif dir is ShiftDirection.right:
-            return np.array([1, 0])
-        elif dir is ShiftDirection.up:
-            return np.array([0, -1])
-        elif dir is ShiftDirection.down:
             return np.array([0, 1])
+        elif dir is ShiftDirection.up:
+            return np.array([-1, 0])
+        elif dir is ShiftDirection.down:
+            return np.array([1, 0])
 
     def __getitem__(self, position):
         return self._board[tuple(position)]
