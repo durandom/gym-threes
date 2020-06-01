@@ -15,6 +15,7 @@ def test_game():
             print(f"No more moves")
             break
 
+        print(f"next_card hint {game.next_card_hint()}")
         print(f"shift {next_move}")
         shifted = game.shift(next_move)
 

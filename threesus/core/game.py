@@ -2,6 +2,7 @@ from .deck import Deck
 from .board import Board
 from .card import Card
 import numpy as np
+import random
 
 class Game:
     deck = None
@@ -65,10 +66,9 @@ class Game:
         self.temp_board.copy_from(self.board)
         new_card_cells = self.board.shift(dir)
         if new_card_cells:
-            print(f"new cards at: {new_card_cells}")
-            # FIXME randomize
-            for cell in new_card_cells:
-                self.board[cell] = self.draw_next_card()
+            new_card_cell = random.choice(new_card_cells)
+            print(f"new card at: {new_card_cell} - chosen from {new_card_cells}")
+            self.board[new_card_cell] = self.draw_next_card()
             self.prev_board.copy_from(self.temp_board)
             self.last_shift_direction = dir
             self.total_turns = self.total_turns + 1
