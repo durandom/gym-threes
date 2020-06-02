@@ -23,6 +23,7 @@ class Board():
         self._board = np.copy(board)
 
     def get_max_card_value(self):
+        # FIXME use numpy for this
         ret = 0
         for x in range(self.width):
             for y in range(self.height):

@@ -11,6 +11,7 @@ class Game:
     total_turns = 0
     number_initial_cards = 9
     _next_card_id = 0
+    _bonus_card_chance = 1 / 21
 
     def __init__(self):
         self._next_bonus_card = None
@@ -41,24 +42,28 @@ class Game:
         next_card_value = self._next_bonus_card or self.deck.peek_next_card()
         return next_card_value
 
+    def get_possible_bonus_cards(self, max_card_value):
+        max_bonus_card = max_card_value / 8
+        bonus_card = 6
+        r = []
+        while bonus_card <= max_bonus_card:
+            r.append(bonus_card)
+            bonus_card = bonus_card * 2
+
+        return r
+
     def draw_next_card(self):
         if self._next_bonus_card:
             card_value = self._next_bonus_card
         else:
             card_value = self.deck.draw_next_card()
 
-        
         # Should the next card be a bonus card?
         max_card_value = self.board.get_max_card_value();
-        # if(maxCardValue >= 48 && _rand.Single() < BONUS_CARD_CHANCE)
-        # {
-        #     List<int> possibleBonusCards = new List<int>(GetPossibleBonusCards(maxCardValue));
-        #     _nextBonusCard = possibleBonusCards[_rand.Int32(0, possibleBonusCards.Count - 1)];
-        # }
-        # else
-        # {
-        #     _nextBonusCard = null;
-        # }
+        if max_card_value >= 48 and random.random() < self._bonus_card_chance:
+            self._next_bonus_card = random.choice(self.get_possible_bonus_cards(max_card_value))
+        else:
+            self._next_bonus_card = None
 
         return Card(card_value, self.next_card_id())
 
@@ -74,30 +79,3 @@ class Game:
             self.total_turns = self.total_turns + 1
             
         return bool(new_card_cells)
-
-        
-        # 	/// <summary>
-        # /// Shifts the game board in the specified direction, merging cards where possible.
-        # /// </summary>
-        # /// <returns>Whether any cards were actually shifted.</returns>
-        # public bool Shift(ShiftDirection dir)
-        # {
-        # 	_tempBoard.CopyFrom(_board);
-        # 	List<IntVector2D> newCardCells = new List<IntVector2D>();
-        # 	bool shifted = _board.Shift(dir, newCardCells);
-        # 	if(shifted)
-        # 	{
-        # 		IntVector2D newCardCell = newCardCells[_rand.Int32(0, newCardCells.Count - 1)];
-        # 		_board[newCardCell] = DrawNextCard();
-
-        # 		_prevBoard.CopyFrom(_tempBoard);
-        # 		LastShiftTime = DateTime.Now;
-        # 		LastShiftDirection = dir;
-        # 		TotalTurns++;
-        # 	}
-        # 	return shifted;
-        # }
-
-    
-
-
