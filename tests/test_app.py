@@ -1,5 +1,6 @@
 from gym_threes.threes.core import Game
 from gym_threes.threes.bots import RandomBot
+from gym_threes.threes.core.card import Card
 
 def test_game():
     game = Game()
@@ -20,3 +21,12 @@ def test_game():
         shifted = game.shift(next_move)
 
         print(f"new Board:\n{game.board}\n")
+
+
+def test_scores():
+    assert Card(1, 1).score() == 0
+    assert Card(2, 1).score() == 0
+    assert Card(3, 1).score() == 3
+    assert Card(6, 1).score() == 9
+    assert Card(12, 1).score() == 27
+    assert Card(384, 1).score() == 6561

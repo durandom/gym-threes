@@ -1,3 +1,5 @@
+import math
+
 class Card(object):
 
     value = None
@@ -19,6 +21,12 @@ class Card(object):
                 return Card(self.value * 2, self.unique_id)
 
         return None
+
+    def score(self):
+        # https://bitsplitting.org/2014/02/11/threes-scoring
+        if self.value < 3:
+            return 0
+        return int(3 ** (math.log2(self.value/3)+1))
         
     def __repr__(self):
         return str(self.value)

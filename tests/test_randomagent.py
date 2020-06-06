@@ -27,8 +27,9 @@ def test_randomagent(verbose=True):
         for _ in range(max_steps):
             # Act randomly until done or maximum steps reached
             action = env.action_space.sample()
-            _, reward, done, _ = env.step(action)
-            score += reward
+            observation, reward, done, info = env.step(action)
+            score = reward
+            # print(info['board'])
             if done:
                 break
         

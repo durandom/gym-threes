@@ -37,6 +37,14 @@ class Board():
     def all_shift_directions(self):
         return list(ShiftDirection)
 
+    def score(self):
+        total = 0
+        for row in self._board:
+            for card in row:
+                if card:
+                    total += card.score()
+        return total
+
     def shift(self, dir):
         new_card_cells = []
         increment = self.get_shift_increment(dir)

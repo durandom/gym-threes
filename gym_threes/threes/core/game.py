@@ -14,6 +14,9 @@ class Game:
     _bonus_card_chance = 1 / 21
 
     def __init__(self):
+        self.reset()
+
+    def reset(self):
         self._next_bonus_card = None
 
         self.deck = Deck()
@@ -24,7 +27,6 @@ class Game:
         self.prev_board = Board(self.board)
         self.temp_board = Board()
 
-
     def initialize_board(self):
         rng = np.random.default_rng()
         for i in range(self.number_initial_cards):
@@ -33,6 +35,9 @@ class Game:
                 if not self.board[position]:
                     self.board[position] = self.draw_next_card()
                     break
+
+    def score(self):
+        return self.board.score()
 
     def next_card_id(self):
         self._next_card_id = self._next_card_id + 1
