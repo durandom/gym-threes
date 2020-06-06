@@ -1,5 +1,5 @@
-from threesus.core import Game
-from threesus.bots import RandomBot
+from gym_threes.threes.core import Game
+from gym_threes.threes.bots import RandomBot
 
 def test_game():
     game = Game()
