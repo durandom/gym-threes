@@ -3,6 +3,7 @@ from .board import Board
 from .card import Card
 import numpy as np
 import random
+import logging
 
 class Game:
     deck = None
@@ -77,7 +78,7 @@ class Game:
         new_card_cells = self.board.shift(dir)
         if new_card_cells:
             new_card_cell = random.choice(new_card_cells)
-            print(f"new card at: {new_card_cell} - chosen from {new_card_cells}")
+            logging.debug(f"new card at: {new_card_cell} - chosen from {new_card_cells}")
             self.board[new_card_cell] = self.draw_next_card()
             self.prev_board.copy_from(self.temp_board)
             self.last_shift_direction = dir
