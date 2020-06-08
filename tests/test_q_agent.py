@@ -2,8 +2,8 @@ import gym
 import gym_threes.envs
 import sys
 
-# import os
-# os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
+import os
+os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 
 import keras
 import numpy as np
@@ -87,13 +87,14 @@ def test_train():
     observation_space = env.observation_space.shape[0]
     agent = Agent(observation_space, action_space)
 
-    episodes = 3000  # Games played in training phase
-    max_steps = 500
+    episodes = 20000  # Games played in training phase
+    max_steps = 50000
     epsilon = 1
     epsilon_decay = 0.99
     epsilon_min = 0.05
     scores = [0]  # A list of all game scores
     recent_scores = []  # List that hold most recent 100 game scores
+    mean_score = 0
 
     for episode in range(episodes):
         observation = env.reset()
@@ -110,20 +111,16 @@ def test_train():
             # Take the selected action and observe next state
             observation, reward, done, _ = env.step(action)
             if done:
-                scores.append(iteration + 1)  # Append final score
+                scores.append(reward)  # Append final score
+                mean_score = np.mean(scores[-100:])
                 # Calculate recent scores
                 if len(scores) > 100:
                     recent_scores = scores[-100:]
                 # Print end-of-game information
                 print(
-                    "\rEpisode {:03d} , epsilon = {:.4f}, score = {:03d}".format(
-                        episode, epsilon, iteration), end="")
+                    "\rEpisode {:03d} , epsilon = {:.4f}, moves = {:04d}, mean = {:05.1f}, score = {:05d}".format(
+                        episode, epsilon, iteration, mean_score, reward), end="")
                 sys.stdout.flush()
-                # Give reward on episode end to accelerate learning
-                if iteration != 499:
-                    reward = -5  # Give -5 reward for taking wrong action leading to failure
-                if iteration == 499:
-                    reward = 5  # Give +5 reward for completing the game successfully
                 # Add the observation to replay memory
                 agent.remember(old_observation, action, reward, None)
                 break
@@ -131,14 +128,14 @@ def test_train():
             agent.remember(old_observation, action, reward, observation)
             # Update the Deep Q-Network Model (only with a chance of 25% and
             # when the last score was worse than 495)
-            if len(agent.memory) >= agent.batch_size and np.random.random() < 0.25 and scores[-1] < 495:
-                logging.debug("update action")
+            if len(agent.memory) >= agent.batch_size and np.random.random() < 0.25 and reward > mean_score:
+                #print(f"retrain agent. reward {reward}, mean {mean_score}")
                 agent.update_action(agent.model, agent.model)
 
         # If mean over the last 100 Games is >495, then success
-        if np.mean(recent_scores) > 495 and iteration > 495:
-            print("\nEnvironment solved in {} episodes.".format(episode), end="")
-            break
+        #if np.mean(recent_scores) > 495 and iteration > 495:
+        #    print("\nEnvironment solved in {} episodes.".format(episode), end="")
+        #    break
         epsilon = max(epsilon_min, epsilon_decay * epsilon)
 
     # Saving the model
@@ -148,7 +145,7 @@ def test_train():
     plt.plot(scores)
     plt.title('Training Phase')
     plt.ylabel('Score')
-    plt.ylim(ymax=510)
+    plt.ylim(ymax=np.max(scores))
     plt.xlabel('Trial')
     plt.savefig('results/ThreesTraining.png', bbox_inches='tight')
     # plt.show()

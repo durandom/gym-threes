@@ -27,13 +27,19 @@ class ThreesEnv(gym.Env):
         shifted = self.game.shift(dir)
         if shifted:
           self.avail_shift_directions = self.all_shift_directions.copy()
+          reward = self.game.score()
         else:
+          reward = 0 
           if dir in self.avail_shift_directions:
             self.avail_shift_directions.remove(dir)
 
         observation = self.state()
-        reward = self.game.score()
-        done = True if len(self.avail_shift_directions) == 0 else False
+        if len(self.avail_shift_directions) == 0:
+            done = True
+            reward = self.game.score()
+        else:
+            done = False
+
         info = {'board': self.game.board}
         return observation, reward, done, info
 

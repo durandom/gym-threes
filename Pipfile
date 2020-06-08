@@ -12,6 +12,7 @@ gym = "*"
 keras = "*"
 tensorflow = "*"
 matplotlib = "*"
+plaidml-keras = "*"
 
 [requires]
 python_version = "3.8"
