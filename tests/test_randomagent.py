@@ -13,10 +13,10 @@ def test_randomagent(verbose=True):
     env = gym.make("Threes-v0")
 
     # Amount of games the agent plays
-    episodes = 5
+    episodes = 600
 
     # Maximum steps the agent has per episode
-    max_steps = 100
+    max_steps = 1000
 
     for episode in range(episodes):
         # Reset the state, done and score before every episode
@@ -29,7 +29,6 @@ def test_randomagent(verbose=True):
             action = env.action_space.sample()
             observation, reward, done, info = env.step(action)
             score = reward
-            # print(info['board'])
             if done:
                 break
         

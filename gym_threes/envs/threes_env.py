@@ -3,6 +3,8 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import numpy as np
 from gym_threes.threes.core import Game
+from six import StringIO
+import logging
 
 
 class ThreesEnv(gym.Env):
@@ -20,18 +22,39 @@ class ThreesEnv(gym.Env):
         self.reset()
 
     def step(self, action):
-        self.game.shift(self.all_shift_directions[action])
-        observation = self.game.board._board.flatten()
+        dir = self.all_shift_directions[action]
+        logging.debug(f"shifting {dir}")
+        shifted = self.game.shift(dir)
+        if shifted:
+          self.avail_shift_directions = self.all_shift_directions.copy()
+        else:
+          if dir in self.avail_shift_directions:
+            self.avail_shift_directions.remove(dir)
+
+        observation = self.state()
         reward = self.game.score()
-        done = False
+        done = True if len(self.avail_shift_directions) == 0 else False
         info = {'board': self.game.board}
         return observation, reward, done, info
 
     def reset(self):
         self.game.reset()
+        self.avail_shift_directions = self.all_shift_directions.copy()
+        return self.state()
 
     def render(self, mode='human'):
+        outfile = StringIO() if mode == 'ansi' else sys.stdout
+        s = 'Score: {}\n'.format(self.game.score)
+        s += 'Highest: {}\n'.format(self.highest())
+        npa = np.array(self.Matrix)
+        grid = npa.reshape((self.size, self.size))
+        s += "{}\n".format(grid)
+        outfile.write(s)
+        return outfile
         print(self.game.board)
 
     def close(self):
         pass
+
+    def state(self):
+      return self.game.board._board.flatten().astype(int)

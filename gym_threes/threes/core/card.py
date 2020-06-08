@@ -33,6 +33,9 @@ class Card(object):
 
     def __str__(self):
         return str(self.value)
+    
+    def __int__(self):
+        return int(self.value)
 
     def __bool__(self):
         return self.value.__bool__()

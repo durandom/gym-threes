@@ -9,6 +9,9 @@ pytest = "*"
 [packages]
 numpy = "*"
 gym = "*"
+keras = "*"
+tensorflow = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.8"
